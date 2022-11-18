@@ -38,3 +38,4 @@ class Community:
 
 if __name__ == '__main__':
     com = Community('Christopher Mulford')
+    print(vars(com))
