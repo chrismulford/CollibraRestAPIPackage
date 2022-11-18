@@ -8,7 +8,6 @@ else:
 creds = auth.CREDENTIALS
 
 
-
 class Domain(CollibraObject):
     url = auth.BASE_URL + 'domains'
     def __init__(self, name, check_exists=True):
@@ -23,37 +22,3 @@ class Domain(CollibraObject):
         self.name = name
         if check_exists:
             self.check_exists_in_env()
-
-
-    def get_collibra_metadata_from_name(self):
-        '''
-        DESCRIPTION: performs a get request on communities endpoint to see if the 
-        community exists in the environment.
-        '''
-        params = {'name': self.name, 'nameMatchMode': 'EXACT'}
-        return requests.get(self.url, params=params, auth=creds)
-
-
-    def check_exists_in_env(self, set_attrs=True):
-        '''
-        DESCRIPTION: performs a get request on communities endpoint to see if the 
-        community exists in the environment.
-        PARAMS:
-        - set_attrs: populates the object with metadata from collibra if it exists
-        '''
-        response = self.get_collibra_metadata_from_name()
-        self.exists_in_env = response.json()['total'] > 0
-        if self.exists_in_env and set_attrs:
-            self.set_atrrs_from_collibra(get_req=response)
-
-
-    def set_atrrs_from_collibra(self, get_req=None):
-        '''
-        DESCRIPTION: Creates an attribute for each item returned in the get_request's
-        metadata about the community
-        '''
-        if not get_req:
-            get_req = self.get_collibra_metadata_from_name()
-        results = get_req.json()['results'][0]
-        for attr in results:
-            super(type(self), self).__setattr__(attr, results[attr])
