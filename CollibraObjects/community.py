@@ -109,6 +109,11 @@ class Community(CollibraObject):
 
 
     def update_in_collibra(self, dont_update_attrs=[]):
+        '''
+        DESCRIPTION: Any local changes made can be uploaded to the collibra environment using this function.
+        PARAMS:
+        - dont_update_attrs: a list of attributes to ignore from update
+        '''
         patch_url = url + f'/{self.id}'
         attrs = vars(self)
         for attr in dont_update_attrs:
