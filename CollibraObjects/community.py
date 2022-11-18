@@ -19,6 +19,15 @@ class Community:
         if check_exists:
             self.check_exists_in_env()
 
+
+    def available_params(self):
+            '''
+            DESCRIPTION: shows the available attributes for the given object
+            '''
+            return ['parent' ,'createdBy' ,'createdOn' ,'lastModifiedBy' ,'lastModifiedOn' ,
+            'system' ,'resourceType' ,'description']
+
+
     def check_exists_in_env(self, set_attrs=True):
         '''
         DESCRIPTION: performs a get request on communities endpoint to see if the 
@@ -30,9 +39,10 @@ class Community:
         response = requests.get(url, params=params, auth=creds)
         self.exists_in_env = response.status_code == 200
         if self.exists_in_env and set_attrs:
-            self.set_data_from_existing(get_req=response)
+            self.set_atrrs_from_collibra(get_req=response)
 
-    def set_data_from_existing(self, get_req=None):
+
+    def set_atrrs_from_collibra(self, get_req=None):
         '''
         DESCRIPTION: Creates an attribute for each item returned in the get_request's
         metadata about the community
@@ -41,13 +51,7 @@ class Community:
         for attr in results:
             super(Community, self).__setattr__(attr, results[attr])
 
-    def available_params(self):
-        '''
-        DESCRIPTION: shows the available attributes for the given object
-        '''
-        return ['parent' ,'createdBy' ,'createdOn' ,'lastModifiedBy' ,'lastModifiedOn' ,
-        'system' ,'resourceType' ,'description']
-
+    
 
 if __name__ == '__main__':
     com = Community('Christopher Mulford')
