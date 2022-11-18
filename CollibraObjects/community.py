@@ -5,8 +5,10 @@ if __name__ != "__main__":
 else:
     from ..CollibraObjects.collibraObject import CollibraObject
 
+
 creds = auth.CREDENTIALS
 url = auth.BASE_URL + 'communities'
+
 
 class Community(CollibraObject):
     def __init__(self, name, check_exists=True):
@@ -87,13 +89,20 @@ class Community(CollibraObject):
             
         else:
             print(f"Could not create community. {self.name} already exists in collibra. Local Object attrs not changed.")
+    
+    
     def delete_from_collibra(self):
+        '''
+        DESCRIPTION: Deletes a community from collibra based on input id. Will retain metadata in local object for backup.
+        '''
         del_url = url + '/removalJobs'
-        
-        response = requests.post(del_url, json=[self.id], auth=creds)
-        if response.status_code<300:
-            print('sucess! Here are the details of the community we are going to delete:')
-            return response.json()
+        if self.exists_in_env:
+            response = requests.post(del_url, json=[self.id], auth=creds)
+            if response.status_code<300:
+                print('sucess! Here are the details of the community we are going to delete:')
+                return response.json()
+            else:
+                print('Oh no! this did not work. Here is what we heard back:', response.text)
+                return None
         else:
-            print('Oh no! this did not work. Here is what we heard back:', response.text)
-            return None
+            print("Community may not exist in environment. Run Community.check_exists_in_env() and try again.")
