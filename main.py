@@ -1,5 +1,5 @@
 from CollibraObjects.community import Community
 
 
-com = Community('Christopher Mulford')
+com = Community('ChristopherMulford')
 print(vars(com))

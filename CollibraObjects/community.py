@@ -1,11 +1,12 @@
 import auth
 import requests
-
+if __name__ != "__main__":
+    from CollibraObjects.collibraObject import CollibraObject
 
 creds = auth.CREDENTIALS
 url = auth.BASE_URL + 'communities'
 
-class Community:
+class Community(CollibraObject):
     def __init__(self, name, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
@@ -37,7 +38,7 @@ class Community:
         '''
         params = {'name': self.name, 'nameMatchMode': 'EXACT'}
         response = requests.get(url, params=params, auth=creds)
-        self.exists_in_env = response.status_code == 200
+        self.exists_in_env = response.json()['total'] > 0
         if self.exists_in_env and set_attrs:
             self.set_atrrs_from_collibra(get_req=response)
 
@@ -50,9 +51,3 @@ class Community:
         results = get_req.json()['results'][0]
         for attr in results:
             super(Community, self).__setattr__(attr, results[attr])
-
-    
-
-if __name__ == '__main__':
-    com = Community('Christopher Mulford')
-    print(vars(com))
