@@ -2,6 +2,8 @@ import auth
 import requests
 if __name__ != "__main__":
     from CollibraObjects.collibraObject import CollibraObject
+else:
+    from ..CollibraObjects.collibraObject import CollibraObject
 
 creds = auth.CREDENTIALS
 url = auth.BASE_URL + 'communities'
@@ -25,7 +27,7 @@ class Community(CollibraObject):
             '''
             DESCRIPTION: shows the available attributes for the given object
             '''
-            return ['parent' ,'createdBy' ,'createdOn' ,'lastModifiedBy' ,'lastModifiedOn' ,
+            return ['parentId' ,'createdBy' ,'createdOn' ,'lastModifiedBy' ,'lastModifiedOn' ,
             'system' ,'resourceType' ,'description']
 
 
@@ -51,3 +53,26 @@ class Community(CollibraObject):
         results = get_req.json()['results'][0]
         for attr in results:
             super(Community, self).__setattr__(attr, results[attr])
+
+
+    def create_in_collibra(self, parentId='', description=''):
+        '''
+        DESCRIPTION: Creates community in collibra according to input variables. Checks if the community exists without
+        changing the attributes on the object.
+        PARAMS:
+        - parentId: id of parent community
+        - description: desired description for the community
+        '''
+        self.check_exists_in_env(set_attrs=False)
+        if not self.exists_in_env:
+            params = {'parentId':parentId, 
+                 'name':self.name, 
+                 'description':description}
+            response = requests.post(url, json=params,auth=creds)
+            if response.ok:
+                print('Sucess!')
+            else:
+                print('oh no! this did not work. Here is what we heard back:', response.text)
+            
+        else:
+            print(f"Could not create community. {self.name} already exists in collibra. Local Object attrs not changed.")
