@@ -131,3 +131,5 @@ dmypy.json
 creds.json
 
 helpful_resources/
+
+scratch.py
