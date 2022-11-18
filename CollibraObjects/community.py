@@ -21,6 +21,7 @@ class Community(CollibraObject):
         - check_exists: can be used to check if the community alread exists in the environment
         '''
         self.name = name
+        self.parentId = None
         if check_exists:
             self.check_exists_in_env()
 

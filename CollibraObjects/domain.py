@@ -2,15 +2,17 @@ import auth
 import requests
 if __name__ != "__main__":
     from CollibraObjects.collibraObject import CollibraObject
+    from CollibraObjects.community import Community
 else:
     from ..CollibraObjects.collibraObject import CollibraObject
+    from ..CollibraObjects.community import Community
 
 creds = auth.CREDENTIALS
 
 
 class Domain(CollibraObject):
     url = auth.BASE_URL + 'domains'
-    def __init__(self, name, check_exists=True):
+    def __init__(self, name, community:Community, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
         perform a get request to see if this community already exists. If it exists, the 
