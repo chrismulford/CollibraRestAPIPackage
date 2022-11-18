@@ -31,7 +31,7 @@ class Domain(CollibraObject):
         community exists in the environment.
         '''
         params = {'name': self.name, 'nameMatchMode': 'EXACT'}
-        return requests.get(url, params=params, auth=creds)
+        return requests.get(self.url, params=params, auth=creds)
 
 
     def check_exists_in_env(self, set_attrs=True):
