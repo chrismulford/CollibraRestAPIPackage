@@ -7,10 +7,10 @@ else:
 
 
 creds = auth.CREDENTIALS
-url = auth.BASE_URL + 'communities'
 
 
 class Community(CollibraObject):
+    url = auth.BASE_URL + 'communities'
     def __init__(self, name, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
@@ -39,7 +39,7 @@ class Community(CollibraObject):
         community exists in the environment.
         '''
         params = {'name': self.name, 'nameMatchMode': 'EXACT'}
-        return requests.get(url, params=params, auth=creds)
+        return requests.get(self.url, params=params, auth=creds)
 
 
     def check_exists_in_env(self, set_attrs=True):
@@ -64,7 +64,7 @@ class Community(CollibraObject):
             get_req = self.get_collibra_metadata_from_name()
         results = get_req.json()['results'][0]
         for attr in results:
-            super(Community, self).__setattr__(attr, results[attr])
+            super(type(self), self).__setattr__(attr, results[attr])
 
 
     def create_in_collibra(self, parentId='', description=''):
@@ -80,7 +80,7 @@ class Community(CollibraObject):
             params = {'parentId':parentId, 
                  'name':self.name, 
                  'description':description}
-            response = requests.post(url, json=params,auth=creds)
+            response = requests.post(self.url, json=params,auth=creds)
             if response.ok:
                 self.set_atrrs_from_collibra()
                 print('Sucess!')
@@ -95,7 +95,7 @@ class Community(CollibraObject):
         '''
         DESCRIPTION: Deletes a community from collibra based on input id. Will retain metadata in local object for backup.
         '''
-        del_url = url + '/removalJobs'
+        del_url = self.url + '/removalJobs'
         if self.exists_in_env:
             response = requests.post(del_url, json=[self.id], auth=creds)
             if response.status_code<300:
@@ -114,7 +114,7 @@ class Community(CollibraObject):
         PARAMS:
         - dont_update_attrs: a list of attributes to ignore from update
         '''
-        patch_url = url + f'/{self.id}'
+        patch_url = self.url + f'/{self.id}'
         attrs = vars(self)
         for attr in dont_update_attrs:
             attrs.pop(attr, None)
