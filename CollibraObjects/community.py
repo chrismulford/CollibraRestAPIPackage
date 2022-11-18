@@ -31,6 +31,15 @@ class Community(CollibraObject):
             'system' ,'resourceType' ,'description']
 
 
+    def get_collibra_metadata_from_name(self):
+        '''
+        DESCRIPTION: performs a get request on communities endpoint to see if the 
+        community exists in the environment.
+        '''
+        params = {'name': self.name, 'nameMatchMode': 'EXACT'}
+        return requests.get(url, params=params, auth=creds)
+
+
     def check_exists_in_env(self, set_attrs=True):
         '''
         DESCRIPTION: performs a get request on communities endpoint to see if the 
@@ -38,8 +47,7 @@ class Community(CollibraObject):
         PARAMS:
         - set_attrs: populates the object with metadata from collibra if it exists
         '''
-        params = {'name': self.name, 'nameMatchMode': 'EXACT'}
-        response = requests.get(url, params=params, auth=creds)
+        response = self.get_collibra_metadata_from_name()
         self.exists_in_env = response.json()['total'] > 0
         if self.exists_in_env and set_attrs:
             self.set_atrrs_from_collibra(get_req=response)
@@ -50,6 +58,8 @@ class Community(CollibraObject):
         DESCRIPTION: Creates an attribute for each item returned in the get_request's
         metadata about the community
         '''
+        if not get_req:
+            get_req = self.get_collibra_metadata_from_name()
         results = get_req.json()['results'][0]
         for attr in results:
             super(Community, self).__setattr__(attr, results[attr])
@@ -57,8 +67,8 @@ class Community(CollibraObject):
 
     def create_in_collibra(self, parentId='', description=''):
         '''
-        DESCRIPTION: Creates community in collibra according to input variables. Checks if the community exists without
-        changing the attributes on the object.
+        DESCRIPTION: Creates community in collibra according to input variables. Checks if the community exists
+        first, will set attributes if success but will not change attributes of local object if fails.
         PARAMS:
         - parentId: id of parent community
         - description: desired description for the community
@@ -70,9 +80,20 @@ class Community(CollibraObject):
                  'description':description}
             response = requests.post(url, json=params,auth=creds)
             if response.ok:
+                self.set_atrrs_from_collibra()
                 print('Sucess!')
             else:
-                print('oh no! this did not work. Here is what we heard back:', response.text)
+                print('Oh no! this did not work. Here is what we heard back:', response.text)
             
         else:
             print(f"Could not create community. {self.name} already exists in collibra. Local Object attrs not changed.")
+    def delete_from_collibra(self):
+        del_url = url + '/removalJobs'
+        
+        response = requests.post(del_url, json=[self.id], auth=creds)
+        if response.status_code<300:
+            print('sucess! Here are the details of the community we are going to delete:')
+            return response.json()
+        else:
+            print('Oh no! this did not work. Here is what we heard back:', response.text)
+            return None
