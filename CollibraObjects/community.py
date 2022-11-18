@@ -106,3 +106,15 @@ class Community(CollibraObject):
                 return None
         else:
             print("Community may not exist in environment. Run Community.check_exists_in_env() and try again.")
+
+
+    def update_in_collibra(self, dont_update_attrs=[]):
+        patch_url = url + f'/{self.id}'
+        attrs = vars(self)
+        for attr in dont_update_attrs:
+            attrs.pop(attr, None)
+        response = requests.patch(patch_url, json=attrs, auth=creds)
+        if response.status_code<300:
+            print(f'{self.name} sucessfully updated!')
+        else:
+            print('Oh no! this did not work. Here is what we heard back:', response.text)
