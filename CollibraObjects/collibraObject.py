@@ -93,3 +93,14 @@ class CollibraObject:
             
         else:
             print(f"Could not create object. {self.name} already exists in collibra. Local object attributes not changed.")
+
+
+    def get_all_attributes(self):
+        '''
+        DESCRIPTION: Explodes the vars() built in function to show all objects attributes
+        '''
+        objs = vars(self)
+        for obj in objs:
+            if issubclass(type(objs[obj]), CollibraObject):
+                objs[obj] = vars(objs[obj])
+        return objs
