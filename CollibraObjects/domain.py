@@ -12,7 +12,7 @@ creds = auth.CREDENTIALS
 
 class Domain(CollibraObject):
     url = auth.BASE_URL + 'domains'
-    def __init__(self, name, check_exists=True):
+    def __init__(self, name, community, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
         perform a get request to see if this community already exists. If it exists, the 
@@ -22,6 +22,34 @@ class Domain(CollibraObject):
         - check_exists: can be used to check if the community alread exists in the environment
         '''
         self.name = name
+        if type(community) == Community and community.exists_in_env:
+            self.community = community
+        else:
+            self.community = Community(community)
+            if not self.community.exists_in_env:
+                print(f'"{self.community.name}" community does not exist.')
+                check_exists = self.community.exists_in_env
         if check_exists:
             self.check_exists_in_env()
             
+    def get_collibra_metadata(self):
+        '''
+        DESCRIPTION: performs a get request on endpoint to see if the 
+        object exists in the environment.
+        Different from parent as the community is searched.
+        '''
+        params = {'communityId': self.community.id, 'name': self.name, 'nameMatchMode':'EXACT'}
+        return requests.get(self.url, params=params, auth=creds)
+
+
+    def set_atrrs_from_collibra(self, get_req=None):
+        '''
+        DESCRIPTION: Creates an attribute for each item returned in the get_request's
+        metadata about the community
+        '''
+        if not get_req:
+            get_req = self.get_collibra_metadata()
+        results = get_req.json()['results'][0]
+        results.pop('community')
+        for attr in results:
+            super(type(self), self).__setattr__(attr, results[attr])
