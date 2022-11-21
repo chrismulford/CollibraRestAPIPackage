@@ -99,7 +99,7 @@ class CollibraObject:
         '''
         DESCRIPTION: Explodes the vars() built in function to show all objects attributes
         '''
-        objs = vars(self)
+        objs = vars(self).copy()
         for obj in objs:
             if issubclass(type(objs[obj]), CollibraObject):
                 objs[obj] = vars(objs[obj])
