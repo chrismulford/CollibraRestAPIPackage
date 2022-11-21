@@ -12,7 +12,7 @@ creds = auth.CREDENTIALS
 
 class Domain(CollibraObject):
     url = auth.BASE_URL + 'domains'
-    def __init__(self, name, community:Community, check_exists=True):
+    def __init__(self, name, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
         perform a get request to see if this community already exists. If it exists, the 
@@ -24,3 +24,4 @@ class Domain(CollibraObject):
         self.name = name
         if check_exists:
             self.check_exists_in_env()
+            

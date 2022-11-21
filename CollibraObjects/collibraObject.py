@@ -48,7 +48,7 @@ class CollibraObject:
         if self.exists_in_env:
             response = requests.post(del_url, json=[self.id], auth=creds)
             if response.status_code<300:
-                print('sucess! Here are the details of the community we are going to delete:')
+                print('Success! Here are the details of the community we are going to delete:')
                 return response.json()
             else:
                 print('Oh no! this did not work. Here is what we heard back:', response.text)
@@ -69,7 +69,7 @@ class CollibraObject:
             attrs.pop(attr, None)
         response = requests.patch(patch_url, json=attrs, auth=creds)
         if response.status_code<300:
-            print(f'{self.name} sucessfully updated!')
+            print(f'{self.name} successfully updated!')
         else:
             print('Oh no! this did not work. Here is what we heard back:', response.text)
 
