@@ -25,3 +25,6 @@ class DomainType(CollibraObject):
         self.name = name
         if check_exists:
             self.check_exists_in_env()
+        if self.exists_in_env:
+            self.community = Community(self.community['name'])
+            
