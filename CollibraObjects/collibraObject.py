@@ -6,7 +6,7 @@ creds = auth.CREDENTIALS
 
 
 class CollibraObject:
-    def get_collibra_metadata_from_name(self):
+    def get_collibra_metadata(self):
         '''
         DESCRIPTION: performs a get request on communities endpoint to see if the 
         community exists in the environment.
@@ -17,12 +17,12 @@ class CollibraObject:
 
     def check_exists_in_env(self, set_attrs=True):
         '''
-        DESCRIPTION: performs a get request on communities endpoint to see if the 
-        community exists in the environment.
+        DESCRIPTION: performs a get request on endpoint to see if the 
+        object exists in the environment.
         PARAMS:
         - set_attrs: populates the object with metadata from collibra if it exists
         '''
-        response = self.get_collibra_metadata_from_name()
+        response = self.get_collibra_metadata()
         self.exists_in_env = response.json()['total'] > 0
         if self.exists_in_env and set_attrs:
             self.set_atrrs_from_collibra(get_req=response)
@@ -34,7 +34,7 @@ class CollibraObject:
         metadata about the community
         '''
         if not get_req:
-            get_req = self.get_collibra_metadata_from_name()
+            get_req = self.get_collibra_metadata()
         results = get_req.json()['results'][0]
         for attr in results:
             super(type(self), self).__setattr__(attr, results[attr])
@@ -82,7 +82,7 @@ class CollibraObject:
         self.check_exists_in_env(set_attrs=False)
         if not self.exists_in_env:
             params = {'parentId':self.parentId, 
-                 'name':self.name, 
+                 'name':self.name,
                  'description':self.description}
             response = requests.post(self.url, json=params,auth=creds)
             if response.ok:
