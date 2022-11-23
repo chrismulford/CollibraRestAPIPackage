@@ -11,7 +11,7 @@ creds = auth.CREDENTIALS
 
 class Community(CollibraObject):
     url = auth.BASE_URL + 'communities'
-    def __init__(self, name, check_exists=True):
+    def __init__(self, id='', name='', check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
         perform a get request to see if this community already exists. If it exists, the 
@@ -20,6 +20,7 @@ class Community(CollibraObject):
         - name*: name of the community (must be unique in env)
         - check_exists: can be used to check if the community alread exists in the environment
         '''
+        self.id = id
         self.name = name
         self.parentId = None
         if check_exists:
@@ -32,8 +33,6 @@ class Community(CollibraObject):
             '''
             return ['parentId' ,'createdBy' ,'createdOn' ,'lastModifiedBy' ,'lastModifiedOn' ,
             'system' ,'resourceType' ,'description']
-
-
     
     
 

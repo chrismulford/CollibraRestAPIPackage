@@ -6,13 +6,42 @@ creds = auth.CREDENTIALS
 
 
 class CollibraObject:
-    def get_collibra_metadata(self):
+    def get_collibra_metadata_from_name(self):
         '''
         DESCRIPTION: performs a get request on communities endpoint to see if the 
         community exists in the environment.
         '''
         params = {'name': self.name, 'nameMatchMode': 'EXACT'}
-        return requests.get(self.url, params=params, auth=creds)
+        resp = requests.get(self.url, params=params, auth=creds)
+        if resp.status_code > 300 or resp.json()['total'] < 0:
+            self.exists_in_env = False
+            return None
+        else:
+            self.exists_in_env = True
+            return resp.json()['results'][0]
+
+    def get_collibra_metadata_from_id(self):
+        '''
+        DESCRIPTION: performs a get request on communities endpoint to see if the 
+        community exists in the environment.
+        '''
+        resp = requests.get(f'{self.url}/{self.id}', auth=creds)
+        if resp.status_code > 300:
+            self.exists_in_env = False
+            return None
+        else:
+            self.exists_in_env = True
+            return resp.json()
+
+    def get_collibra_metadata(self, from_attr=None):
+        if from_attr == 'id':
+            return self.get_collibra_metadata_from_id()
+        elif from_attr == 'name':
+            return self.get_collibra_metadata_from_name()
+        elif self.id != '':
+            return self.get_collibra_metadata_from_id()
+        else:
+            return self.get_collibra_metadata_from_name()
 
 
     def check_exists_in_env(self, set_attrs=True):
@@ -23,7 +52,6 @@ class CollibraObject:
         - set_attrs: populates the object with metadata from collibra if it exists
         '''
         response = self.get_collibra_metadata()
-        self.exists_in_env = response.json()['total'] > 0
         if self.exists_in_env and set_attrs:
             self.set_atrrs_from_collibra(get_req=response)
 
@@ -35,9 +63,8 @@ class CollibraObject:
         '''
         if not get_req:
             get_req = self.get_collibra_metadata()
-        results = get_req.json()['results'][0]
-        for attr in results:
-            super(type(self), self).__setattr__(attr, results[attr])
+        for attr in get_req:
+            super(type(self), self).__setattr__(attr, get_req[attr])
 
 
     def delete_from_collibra(self):
