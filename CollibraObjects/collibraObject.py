@@ -17,8 +17,11 @@ class CollibraObject:
             self.exists_in_env = False
             return None
         else:
-            self.exists_in_env = True
-            return resp.json()['results'][0]
+            if resp.json()['total'] > 0:
+                self.exists_in_env = True
+                return resp.json()['results'][0]
+            else:
+                self.exists_in_env = False
 
     def get_collibra_metadata_from_id(self):
         '''
@@ -108,7 +111,11 @@ class CollibraObject:
         '''
         self.check_exists_in_env(set_attrs=False)
         if not self.exists_in_env:
-            params = {'parentId':self.parentId, 
+            if self.parent:
+                parentId = self.parent.id
+            else:
+                parentId = '' 
+            params = {'parentId':parentId, 
                  'name':self.name,
                  'description':self.description}
             response = requests.post(self.url, json=params,auth=creds)
