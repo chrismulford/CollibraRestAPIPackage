@@ -1,16 +1,16 @@
-import auth
+import src.auth
 import requests
 if __name__ != "__main__":
-    from CollibraObjects.collibraObject import CollibraObject
+    from src.CollibraObjects.collibraObject import CollibraObject
 else:
-    from ..CollibraObjects.collibraObject import CollibraObject
+    from ...src.CollibraObjects.collibraObject import CollibraObject
 
 
-creds = auth.CREDENTIALS
+creds = src.auth.CREDENTIALS
 
 
 class Community(CollibraObject):
-    url = auth.BASE_URL + 'communities'
+    url = src.auth.BASE_URL + 'communities'
     def __init__(self, id='', name='', parentCommunity=None, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 

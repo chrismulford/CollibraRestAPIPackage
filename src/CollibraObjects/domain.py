@@ -1,19 +1,19 @@
-import auth
+import src.auth
 import requests
 if __name__ != "__main__":
-    from CollibraObjects.collibraObject import CollibraObject
-    from CollibraObjects.community import Community
-    from CollibraObjects.domainType import DomainType
+    from src.CollibraObjects.collibraObject import CollibraObject
+    from src.CollibraObjects.community import Community
+    from src.CollibraObjects.domainType import DomainType
 else:
-    from ..CollibraObjects.collibraObject import CollibraObject
-    from ..CollibraObjects.community import Community
-    from ..CollibraObjects.domainType import DomainType
+    from ...src.CollibraObjects.collibraObject import CollibraObject
+    from ...src.CollibraObjects.community import Community
+    from ...src.CollibraObjects.domainType import DomainType
 
-creds = auth.CREDENTIALS
+creds = src.auth.CREDENTIALS
 
 
 class Domain(CollibraObject):
-    url = auth.BASE_URL + 'domains'
+    url = src.auth.BASE_URL + 'domains'
     def __init__(self, id='', name='', community:Community=None, domainType:DomainType=None, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 

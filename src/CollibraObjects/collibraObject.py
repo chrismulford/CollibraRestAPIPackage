@@ -1,8 +1,8 @@
-import auth
+import src.auth
 import requests
 
 
-creds = auth.CREDENTIALS
+creds = src.auth.CREDENTIALS
 
 
 class CollibraObject:
