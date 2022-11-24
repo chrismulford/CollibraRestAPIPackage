@@ -37,12 +37,12 @@ class Domain(CollibraObject):
                 if type(community) == Community: 
                     self.community = community
                     if not community.exists_in_env:
-                        raise ValueError(f'Community does not exist: \n {self.community.get_all_attributes()}')
+                        raise ValueError(f'Community does not exist: \n {self.community.get_all_metadata()}')
                 self.check_exists_in_env()
                 if type(domainType) == DomainType:
                     self.type = domainType
                     if not domainType.exists_in_env:
-                        raise ValueError(f'DomainType does not exist: \n {self.type.get_all_attributes()}')
+                        raise ValueError(f'DomainType does not exist: \n {self.type.get_all_metadata()}')
                 else:
                     self.type = DomainType(id=self.type['id'])
                 

@@ -129,7 +129,7 @@ class CollibraObject:
             print(f"Could not create object. {self.name} already exists in collibra. Local object attributes not changed.")
 
 
-    def get_all_attributes(self):
+    def get_all_metadata(self):
         '''
         DESCRIPTION: Explodes the vars() built in function to show all objects attributes
         '''

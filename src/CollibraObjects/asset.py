@@ -44,7 +44,7 @@ class Asset(CollibraObject):
             if type(domain) == Domain:
                 self.domain = domain
                 if not domain.exists_in_env:
-                    raise ValueError(f'Domain does not exist: \n {self.domain.get_all_attributes()}')
+                    raise ValueError(f'Domain does not exist: \n {self.domain.get_all_metadata()}')
             if type(assetType) == AssetType:
                 self.type = assetType
                 if not assetType.exists_in_env:
