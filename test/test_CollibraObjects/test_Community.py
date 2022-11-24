@@ -23,3 +23,18 @@ def test_existing_community_from_name():
     com = Community(name='Christopher Mulford')
     assert type(com) == Community
     assert com.get_all_attributes() == christopher_mulford_com_data
+
+
+def test_community_not_exist_id():
+    com = Community(id='not-an-id')
+    assert type(com) == Community
+    assert com.get_all_attributes() == {'id': 'not-an-id', 'name': '', 'parent': None, 'exists_in_env': False}
+
+
+def test_community_not_exist_name():
+    com = Community(name='Community doesnt exist')
+    assert type(com) == Community
+    assert com.get_all_attributes() == {'id': '',
+ 'name': 'Community doesnt exist',
+ 'parent': None,
+ 'exists_in_env': False}
