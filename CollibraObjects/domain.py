@@ -14,42 +14,37 @@ creds = auth.CREDENTIALS
 
 class Domain(CollibraObject):
     url = auth.BASE_URL + 'domains'
-    def __init__(self, id='', name='', domainType='', community='', check_exists=True):
+    def __init__(self, id='', name='', community:Community=None, domainType:DomainType=None, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
         perform a get request to see if this community already exists. If it exists, the 
         set_data_from_existing method will be called to populate the appropriate attributes.
         PARAMS:
-        - name*: name of the community (must be unique in env)
+        - id*: unique id of the Domain. Required if name not specified.
+        - name*: name of the Domain (must be unique in env). Required if id not specified.
+        - community*: Community object for the parent community of the domain. Required if id not specified.
+        - domainType: DomainType object of the Domain to help ensure it is unique.
         - check_exists: can be used to check if the community alread exists in the environment
         '''
         self.id = id
-        if self.id != '':
-            self.check_exists_in_env()
-            self.community = Community(id=self.community['id'])
-            self.type = DomainType(id=self.type['id'])
+        if check_exists:
+            if self.id != '':
+                self.check_exists_in_env()
+                self.community = Community(id=self.community['id'])
+                self.type = DomainType(id=self.type['id'])
+            else:
+                self.name = name
+                if type(community) == Community: 
+                    self.community = community
+                    if not community.exists_in_env:
+                        raise ValueError(f'Community does not exist: \n {self.community.get_all_attributes()}')
+                if type(domainType) == DomainType:
+                    self.type = domainType
+                    if not domainType.exists_in_env:
+                        raise ValueError(f'DomainType does not exist: \n {self.type.get_all_attributes()}')
+                self.check_exists_in_env()
         else:
             self.name = name
-            if type(community) == Community and community.exists_in_env:
-                self.community = community
-            else:
-                self.community = Community(name=community)
-                if not self.community.exists_in_env:
-                    print(f'"{self.community.name}" community does not exist.')
-                    check_exists = self.community.exists_in_env
-            if type(domainType) == DomainType and domainType.exists_in_env:
-                self.type = domainType
-            elif domainType != '':
-                self.type = DomainType(name=domainType)
-                if not self.type.exists_in_env:
-                    print(f'"{self.type.name}" DomainType does not exist.')
-                    check_exists = self.type.exists_in_env
-            else:
-                self.check_exists_in_env()
-                self.type = DomainType(id=self.type['id'])
-                check_exists=False
-            if check_exists:
-                self.check_exists_in_env()
                 
 
             
@@ -64,8 +59,11 @@ class Domain(CollibraObject):
             self.exists_in_env = False
             return None
         else:
-            self.exists_in_env = True
-            return resp.json()['results'][0]
+            if resp.json()['total'] > 0:
+                self.exists_in_env = True
+                return resp.json()['results'][0]
+            else:
+                self.exists_in_env = False
 
 
     def set_atrrs_from_collibra(self, get_req=None):
