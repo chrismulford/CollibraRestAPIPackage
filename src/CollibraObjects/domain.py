@@ -45,7 +45,6 @@ class Domain(CollibraObject):
                         raise ValueError(f'DomainType does not exist: \n {self.type.get_all_metadata()}')
                 else:
                     self.type = DomainType(id=self.type['id'])
-                
         else:
             self.name = name
                 

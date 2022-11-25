@@ -45,11 +45,14 @@ class Asset(CollibraObject):
                 self.domain = domain
                 if not domain.exists_in_env:
                     raise ValueError(f'Domain does not exist: \n {self.domain.get_all_metadata()}')
+            self.check_exists_in_env()
             if type(assetType) == AssetType:
                 self.type = assetType
                 if not assetType.exists_in_env:
                     raise ValueError(f'AssetType does not exist: \n {self.type.get_all_attributes()}')
-            self.check_exists_in_env()
+            else:
+                self.type = AssetType(id=self.type['id'])
+            
 
 
     def get_collibra_metadata_from_name(self):
