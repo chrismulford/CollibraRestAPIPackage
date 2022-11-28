@@ -92,7 +92,8 @@ class Asset(CollibraObject):
 
     def get_create_object_params(self):
         params = {'name':self.name,
-                'displayName':self.displayName,
                 'domainId':self.domain.id,
                 'typeId': self.type.id}
+        if len(self.displayName) > 0:
+            params['displayName'] = self.displayName
         return params
