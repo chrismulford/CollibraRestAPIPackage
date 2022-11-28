@@ -28,7 +28,7 @@ def test_existing_community_from_name():
 def test_community_not_exist_id():
     com = Community(id='not-an-id')
     assert type(com) == Community
-    assert com.get_all_metadata() == {'id': 'not-an-id', 'name': '', 'parent': None, 'exists_in_env': False}
+    assert com.get_all_metadata() == {'id': 'not-an-id', 'name': '', 'parent': None, 'exists_in_env': False, 'description':''}
 
 
 def test_community_not_exist_name():
@@ -37,4 +37,5 @@ def test_community_not_exist_name():
     assert com.get_all_metadata() == {'id': '',
  'name': 'Community doesnt exist',
  'parent': None,
- 'exists_in_env': False}
+ 'exists_in_env': False,
+ 'description':''}

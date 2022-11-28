@@ -43,3 +43,12 @@ def test_domainType_not_exist():
         dom = Domain(name='Punk Beer Collection', community=Community(name='Not a real community'),
         domainType=DomainType(name='Not Real'))
 
+
+def test_domain_doesnt_exist():
+    dom = Domain(name='Does Not Exist', community=Community(name='Christopher Mulford'))
+    assert dom.id == ''
+    assert dom.name == 'Does Not Exist'
+    assert dom.description == ''
+    assert dom.exists_in_env == False
+    assert type(dom.community) == Community
+    assert dom.community.id == '5774022f-8fc9-4edc-857a-b96eba505d61'

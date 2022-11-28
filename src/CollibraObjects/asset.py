@@ -16,7 +16,7 @@ creds = src.auth.CREDENTIALS
 
 class Asset(CollibraObject):
     url = src.auth.BASE_URL + 'assets'
-    def __init__(self,id='', name='', domain:Domain=None, assetType=None, check_exists=True):
+    def __init__(self,id='', name='', displayName='', domain:Domain=None, assetType=None, check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
         perform a get request to see if this community already exists. If it exists, the 
@@ -29,6 +29,7 @@ class Asset(CollibraObject):
         - check_exists: can be used to check if the community alread exists in the environment
         '''
         self.id = id
+        self.displayName = displayName
         if self.id != '':
             self.check_exists_in_env()
             self.domain = Domain(id=self.domain['id'])
@@ -87,3 +88,11 @@ class Asset(CollibraObject):
             get_req.pop('type')
         for attr in get_req:
             super(type(self), self).__setattr__(attr, get_req[attr])
+
+
+    def get_create_object_params(self):
+        params = {'name':self.name,
+                'displayName':self.displayName,
+                'domainId':self.domain.id,
+                'typeId': self.type.id}
+        return params

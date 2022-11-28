@@ -111,13 +111,7 @@ class CollibraObject:
         '''
         self.check_exists_in_env(set_attrs=False)
         if not self.exists_in_env:
-            if self.parent:
-                parentId = self.parent.id
-            else:
-                parentId = '' 
-            params = {'parentId':parentId, 
-                 'name':self.name,
-                 'description':self.description}
+            params = self.get_create_object_params()
             response = requests.post(self.url, json=params,auth=creds)
             if response.ok:
                 self.set_atrrs_from_collibra()
@@ -138,3 +132,9 @@ class CollibraObject:
             if issubclass(type(objs[obj]), CollibraObject):
                 objs[obj] = vars(objs[obj])
         return objs
+
+
+    def get_create_object_params(self):
+        params = {'name':self.name,
+                 'description':self.description}
+        return params

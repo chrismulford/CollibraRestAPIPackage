@@ -14,7 +14,8 @@ creds = src.auth.CREDENTIALS
 
 class Domain(CollibraObject):
     url = src.auth.BASE_URL + 'domains'
-    def __init__(self, id='', name='', community:Community=None, domainType:DomainType=None, check_exists=True):
+    create_requirements = ['name', 'Community (id)', 'DomainType (id)']
+    def __init__(self, id='', name='', community:Community=None, domainType:DomainType=None, description='',check_exists=True):
         '''
         DESCRIPTION: Initialises the object with a name. If check_exists, then 
         perform a get request to see if this community already exists. If it exists, the 
@@ -24,9 +25,11 @@ class Domain(CollibraObject):
         - name*: name of the Domain (must be unique in env). Required if id not specified.
         - community*: Community object for the parent community of the domain. Required if id not specified.
         - domainType: DomainType object of the Domain to help ensure it is unique.
+        - description: Displayed description of the Domain. Will be overwritten if domain exists already
         - check_exists: can be used to check if the community alread exists in the environment
         '''
         self.id = id
+        self.description = description
         if check_exists:
             if self.id != '':
                 self.check_exists_in_env()
@@ -44,7 +47,8 @@ class Domain(CollibraObject):
                     if not domainType.exists_in_env:
                         raise ValueError(f'DomainType does not exist: \n {self.type.get_all_metadata()}')
                 else:
-                    self.type = DomainType(id=self.type['id'])
+                    if self.exists_in_env:
+                        self.type = DomainType(id=self.type['id'])
         else:
             self.name = name
                 
@@ -81,3 +85,11 @@ class Domain(CollibraObject):
             get_req.pop('type')
         for attr in get_req:
             super(type(self), self).__setattr__(attr, get_req[attr])
+
+
+    def get_create_object_params(self):
+            params = {'name':self.name,
+                    'description':self.description,
+                    'communityId':self.community.id,
+                    'typeId': self.type.id}
+            return params
