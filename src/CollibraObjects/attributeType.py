@@ -2,14 +2,8 @@ import src.auth
 import requests
 if __name__ != "__main__":
     from src.CollibraObjects.collibraObject import CollibraObject
-    from src.CollibraObjects.community import Community
-    from src.CollibraObjects.domain import Domain
-    from src.CollibraObjects.assetType import AssetType
 else:
     from ...src.CollibraObjects.collibraObject import CollibraObject
-    from ...src.CollibraObjects.community import Community
-    from ...src.CollibraObjects.domain import Domain
-    from ...src.CollibraObjects.assetType import AssetType
 
 creds = src.auth.CREDENTIALS
 
