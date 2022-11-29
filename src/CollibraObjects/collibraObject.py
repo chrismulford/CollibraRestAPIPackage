@@ -9,7 +9,7 @@ class CollibraObject:
     def get_collibra_metadata_from_name(self):
         '''
         DESCRIPTION: performs a get request on communities endpoint to see if the 
-        community exists in the environment.
+        object exists in the environment.
         '''
         params = {'name': self.name, 'nameMatchMode': 'EXACT'}
         resp = requests.get(self.url, params=params, auth=creds)
@@ -105,8 +105,8 @@ class CollibraObject:
 
     
     def create_in_collibra(self):
-        '''
-        DESCRIPTION: Creates community in collibra according to input variables. Checks if the community exists
+        f'''
+        DESCRIPTION: Creates {type(self)} in collibra according to input variables. Checks if the {type(self)} exists
         first, will set attributes if success but will not change attributes of local object if fails.
         '''
         self.check_exists_in_env(set_attrs=False)
