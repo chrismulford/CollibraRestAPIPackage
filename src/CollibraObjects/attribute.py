@@ -32,9 +32,11 @@ class Attribute(CollibraObject):
         self.description = description
         if check_exists:
             self.check_exists_in_env()
-        #if self.exists_in_env:
-        #    self.asset = Asset(id=self.asset['id'])
-        #    self.type = AttributeType(id=self.type['id'])
+        if self.exists_in_env:
+            if type(self.asset) != Asset:
+                self.asset = Asset(id=self.asset['id'])
+            if type(self.type) != AttributeType:
+                self.type = AttributeType(id=self.type['id'])
 
     def check_exists_in_env(self, set_attrs=True):
         '''
@@ -47,6 +49,20 @@ class Attribute(CollibraObject):
         if self.exists_in_env and set_attrs:
             self.set_atrrs_from_collibra(get_req=response)
 
+
+    def set_atrrs_from_collibra(self, get_req=None):
+            '''
+            DESCRIPTION: Creates an attribute for each item returned in the get_request's
+            metadata about the community
+            '''
+            if not get_req:
+                get_req = self.get_collibra_metadata()
+            if type(self.asset) == Asset:
+                get_req.pop('asset')
+            if type(self.type) == AttributeType:
+                get_req.pop('type')
+            for attr in get_req:
+                super(type(self), self).__setattr__(attr, get_req[attr])
 
     def delete_from_collibra(self):
         '''
